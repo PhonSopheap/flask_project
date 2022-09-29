@@ -4,7 +4,7 @@ pipeline {
         DOCKER_TAG = "${BUILD_NUMBER}"
     }
  stages{
-        stage('Build Docker Images'){
+        stage('Build Docker Image'){
             steps{
                 sh 'docker build -t poretrithynea/miniproject:${DOCKER_TAG} .'
             }
