@@ -4,7 +4,7 @@ node {
         checkout scm
     }
     stage('Build image') {
-       app = docker.build("poretrithynea/miniproject")
+       app = docker.build("rotanakkosal/miniproject")
     }
     stage('Test image') {
         app.inside {
@@ -12,7 +12,7 @@ node {
         }
     }
     stage('Push images') {   
-        docker.withRegistry('https://registry.hub.docker.com', 'rithyneahub') {
+        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
             app.push("${env.BUILD_NUMBER}")
         }
     } 
