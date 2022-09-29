@@ -4,7 +4,7 @@ pipeline {
         DOCKER_TAG = "${BUILD_NUMBER}"
     }
  stages{
-        stage('Build Docker Image'){
+        stage('Build Docker Images'){
             steps{
                 sh 'docker build -t poretrithynea/miniproject:${DOCKER_TAG} .'
             }
@@ -17,7 +17,7 @@ pipeline {
                 }
             }
         }
-        stage('Trigger ManifestUpdate') {
+        stage('Trigger ManifestUpdates') {
                 echo "triggering updatemanifestjob"
                 build job: 'updatemanifest', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]
         }
