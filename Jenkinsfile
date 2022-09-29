@@ -1,27 +1,23 @@
-pipeline {
-    agent any
-    environment{
-        DOCKER_TAG = "${BUILD_NUMBER}"
+node {
+    def app
+    stage('Clone repository') {
+        checkout scm
     }
- stages{
-        stage('Build Docker Image'){
-            steps{
-                sh 'docker build -t poretrithynea/miniproject:${DOCKER_TAG} .'
-            }
+    stage('Build image') {
+       app = docker.build("poretrithynea/miniproject")
+    }
+    stage('Test image') {
+        app.inside {
+            sh 'echo "Tests passed"'
         }
-        stage('DockerHub Push'){
-            steps{
-                withCredentials([usernamePassword(credentialsId: 'rithyneahub', usernameVariable: 'dockerUser', passwordVariable: 'dockerHubPwd')]) {
-                    sh 'docker login -u ${dockerUser} -p ${dockerHubPwd}'
-                    sh 'docker push poretrithynea/miniproject:${DOCKER_TAG}'
-                }
-            }
+    }
+    stage('Push image') {   
+        docker.withRegistry('https://registry.hub.docker.com', 'rithyneahub') {
+            app.push("${env.BUILD_NUMBER}")
         }
-        stage('Trigger ManifestUpdate') {
-            steps{
+    } 
+    stage('Trigger ManifestUpdate') {
                 echo "triggering updatemanifestjob"
                 build job: 'updatemanifest', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]
-            }    
         }
-      }
-    }
+}
