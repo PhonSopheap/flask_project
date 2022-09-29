@@ -11,7 +11,7 @@ node {
             sh 'echo "Tests passed"'
         }
     }
-    stage('Push image') {   
+    stage('Push images') {   
         docker.withRegistry('https://registry.hub.docker.com', 'rithyneahub') {
             app.push("${env.BUILD_NUMBER}")
         }
